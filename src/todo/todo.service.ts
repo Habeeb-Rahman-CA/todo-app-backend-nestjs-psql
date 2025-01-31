@@ -29,46 +29,52 @@ export class TodoService {
 
   async findOne(id: number) {
     try {
-      const todo =  await this.todoRepository.findOne({ where: { id } });
-      if(id !== todo?.id){
+      if (!id) {
         throw new NotFoundException('ID does not match')
       }
-      return todo
+      const todo = await this.todoRepository.findOne({ where: { id } });
+      if (!todo) {
+        throw new NotFoundException(`Todo with ${id} not found`)
+      }
+      return 
     } catch (error) {
-      throw new NotFoundException(error.message)
+      throw new BadRequestException(error.message)
     }
   }
 
   async update(id: number, updateTodoDto: UpdateTodoDto) {
     try {
-      const todo = await this.findOne(id)
-      if (!todo) {
-        throw new NotFoundException('Todo does not exist')
+      const todo = await this.todoRepository.update(id, updateTodoDto)
+      if (todo.affected == 0) {
+        throw new NotFoundException('Todo ID does not match')
       }
-      Object.assign(todo, updateTodoDto)
-      return await this.todoRepository.save(todo);
+      return
     } catch (error) {
-      throw new NotFoundException(error.message)
+      throw new BadRequestException(error.message)
     }
   }
 
-  async toggleStatus(id: number){
+  async toggleStatus(id: number) {
     try {
-      const todo = await this.findOne(id)
+      const todo = await this.todoRepository.findOne({ where: { id } })
       if (todo) {
         todo.isCompleted = !todo.isCompleted
+        return await this.todoRepository.save(todo)
       }
-      return await this.todoRepository.save(todo)
     } catch (error) {
       throw new BadRequestException(error.message)
     }
   }
 
   async remove(id: number) {
-    const todo = await this.findOne(id)
-    if (!todo) {
-      throw new NotFoundException()
+    try {
+      const todo = await this.todoRepository.findOne({ where: { id } })
+      if (!todo) {
+        throw new NotFoundException('Todo ID does not match')
+      }
+      return await this.todoRepository.remove(todo);
+    } catch (error) {
+      throw new BadRequestException(error.message)
     }
-    return await this.todoRepository.remove(todo);
   }
 }
