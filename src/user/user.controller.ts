@@ -5,7 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -17,12 +17,8 @@ export class UserController {
     @Query('name') text: string,
     @Query('gender') gender: string
   ) {
-    if(text){
-      return this.userService.findByName(text)
-    }
-    if(gender){
-      return this.userService.findByGender(gender)
-    }
+    if (text) return this.userService.findByName(text)
+    if (gender) return this.userService.findByGender(gender)
     return this.userService.findAll();
   }
 
@@ -32,7 +28,9 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 

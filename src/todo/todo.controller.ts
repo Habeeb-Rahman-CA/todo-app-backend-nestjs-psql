@@ -18,15 +18,9 @@ export class TodoController {
     @Query('todoTitle') todoTitle: string,
     @Query('status') status: boolean
   ) {
-    if (userId) {
-      return this.todoService.findByUser(+userId)
-    }
-    if (todoTitle) {
-      return this.todoService.findByTodoTitle(todoTitle)
-    }
-    if (status) {
-      return this.todoService.findByStatus(status)
-    }
+    if (userId) return this.todoService.findByUser(+userId)
+    if (todoTitle) return this.todoService.findByTodoTitle(todoTitle)
+    if (status) return this.todoService.findByStatus(status)
     return this.todoService.findAll()
   }
 
