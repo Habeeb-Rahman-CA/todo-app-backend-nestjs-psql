@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -13,17 +13,26 @@ export class TodoController {
   }
 
   @Get()
-  findAll() {
-    return this.todoService.findAll();
+  find(
+    @Query('userId') userId: string,
+    @Query('todoTitle') todoTitle: string,
+    @Query('status') status: boolean
+  ) {
+    if (userId) {
+      return this.todoService.findByUser(+userId)
+    }
+    if (todoTitle) {
+      return this.todoService.findByTodoTitle(todoTitle)
+    }
+    if (status) {
+      return this.todoService.findByStatus(status)
+    }
+    return this.todoService.findAll()
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.todoService.findOne(+id);
-  }
-  @Get('filter/:id')
-  findByUser(@Param('id') id: string){
-    return this.todoService.findByUser(+id)
   }
 
   @Patch(':id')
@@ -31,9 +40,9 @@ export class TodoController {
     return this.todoService.update(+id, updateTodoDto);
   }
 
-  @Patch('toggle/:id')
-  toggle(@Param('id') id: string) {
-    return this.todoService.toggleStatus(+id)
+  @Patch()
+  toggle(@Query('todoId') todoId: string) {
+    return this.todoService.toggleStatus(+todoId)
   }
 
   @Delete(':id')

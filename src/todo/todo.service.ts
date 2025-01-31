@@ -3,7 +3,7 @@ import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './entities/todo.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class TodoService {
     try {
       const user = await this.userRepository.findOne({ where: { id: userId } })
       if (!user) throw new NotFoundException('User id does not match')
-      const todo = this.todoRepository.create({...createTodoDto, user});
+      const todo = this.todoRepository.create({ ...createTodoDto, user });
       return await this.todoRepository.save(todo);
     } catch (error) {
       throw new BadRequestException(error.message)
@@ -45,7 +45,7 @@ export class TodoService {
       if (!todo) {
         throw new NotFoundException(`Todo with ${id} not found`)
       }
-      return
+      return todo
     } catch (error) {
       throw new BadRequestException(error.message)
     }
@@ -93,6 +93,26 @@ export class TodoService {
         where: { user: { id: userId } },
         relations: ['user'],
         select: { title: true, description: true, isCompleted: true }
+      })
+    } catch (error) {
+      throw new BadRequestException(error.message)
+    }
+  }
+
+  async findByTodoTitle(todoTitle: string) {
+    try {
+      return await this.todoRepository.find({
+        where: { title: ILike(`%${todoTitle}%`) }
+      })
+    } catch (error) {
+      throw new NotFoundException(error.message)
+    }
+  }
+
+  async findByStatus(status: boolean) {
+    try {
+      return this.todoRepository.find({
+        where: { isCompleted: status }
       })
     } catch (error) {
       throw new BadRequestException(error.message)
