@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -13,7 +13,16 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
+  findAll(
+    @Query('name') text: string,
+    @Query('gender') gender: string
+  ) {
+    if(text){
+      return this.userService.findByName(text)
+    }
+    if(gender){
+      return this.userService.findByGender(gender)
+    }
     return this.userService.findAll();
   }
 

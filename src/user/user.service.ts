@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -63,6 +63,26 @@ export class UserService {
       return this.userRepository.remove(user)
     } catch (error) {
       throw new BadRequestException(error.message)
+    }
+  }
+
+  async findByName(text: string) {
+    try {
+      return await this.userRepository.find({
+        where: { name: ILike(`%${text}%`) }
+      })
+    } catch (error) {
+      throw new NotFoundException(error.message)
+    }
+  }
+
+  async findByGender(gender: string) {
+    try {
+      return await this.userRepository.find({
+        where: { gender: gender }
+      })
+    } catch (error) {
+      throw new NotFoundException(error.message)
     }
   }
 }
