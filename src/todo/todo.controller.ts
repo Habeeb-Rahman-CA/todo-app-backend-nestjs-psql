@@ -9,7 +9,7 @@ export class TodoController {
 
   @Post()
   create(@Body() createTodoDto: CreateTodoDto) {
-    return this.todoService.create(createTodoDto);
+    return this.todoService.create(createTodoDto, createTodoDto.userId);
   }
 
   @Get()

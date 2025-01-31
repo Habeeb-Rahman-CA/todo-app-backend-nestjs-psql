@@ -4,15 +4,21 @@ import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './entities/todo.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class TodoService {
 
-  constructor(@InjectRepository(Todo) private readonly todoRepository: Repository<Todo>) { }
+  constructor(
+    @InjectRepository(Todo) private readonly todoRepository: Repository<Todo>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>
+  ) { }
 
-  async create(createTodoDto: CreateTodoDto) {
+  async create(createTodoDto: CreateTodoDto, userId: number) {
     try {
-      const todo = this.todoRepository.create(createTodoDto);
+      const user = await this.userRepository.findOne({ where: { id: userId } })
+      if (!user) throw new NotFoundException('User id does not match')
+      const todo = this.todoRepository.create({...createTodoDto, user});
       return await this.todoRepository.save(todo);
     } catch (error) {
       throw new BadRequestException(error.message)
@@ -21,7 +27,10 @@ export class TodoService {
 
   async findAll() {
     try {
-      return await this.todoRepository.find();
+      return await this.todoRepository.find({
+        relations: ['user'],
+        select: { id: true, title: true, description: true, isCompleted: true, user: { name: true } }
+      });
     } catch (error) {
       throw new RequestTimeoutException(error.message)
     }
@@ -36,7 +45,7 @@ export class TodoService {
       if (!todo) {
         throw new NotFoundException(`Todo with ${id} not found`)
       }
-      return 
+      return
     } catch (error) {
       throw new BadRequestException(error.message)
     }

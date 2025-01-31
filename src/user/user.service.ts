@@ -21,7 +21,7 @@ export class UserService {
 
   async findAll() {
     try {
-      return await this.userRepository.find()
+      return await this.userRepository.find({ relations: ['todos'] })
     } catch (error) {
       throw new RequestTimeoutException(error.message)
     }
