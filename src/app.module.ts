@@ -5,6 +5,8 @@ import { TodoModule } from './todo/todo.module';
 import { Todo } from './todo/entities/todo.entity';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { FileUpload } from './file-upload/entities/file-upload.entity';
 
 @Module({
   imports: [
@@ -18,13 +20,14 @@ import { User } from './user/entities/user.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [Todo, User],
+        entities: [Todo, User, FileUpload],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     TodoModule,
     UserModule,
+    FileUploadModule,
   ],
 })
 export class AppModule { }
