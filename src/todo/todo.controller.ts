@@ -21,6 +21,10 @@ export class TodoController {
   findOne(@Param('id') id: string) {
     return this.todoService.findOne(+id);
   }
+  @Get('filter/:id')
+  findByUser(@Param('id') id: string){
+    return this.todoService.findByUser(+id)
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {

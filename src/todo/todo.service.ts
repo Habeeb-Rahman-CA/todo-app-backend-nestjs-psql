@@ -86,4 +86,16 @@ export class TodoService {
       throw new BadRequestException(error.message)
     }
   }
+
+  async findByUser(userId: number) {
+    try {
+      return this.todoRepository.find({
+        where: { user: { id: userId } },
+        relations: ['user'],
+        select: { title: true, description: true, isCompleted: true }
+      })
+    } catch (error) {
+      throw new BadRequestException(error.message)
+    }
+  }
 }
