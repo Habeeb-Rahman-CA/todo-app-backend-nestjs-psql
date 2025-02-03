@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -15,6 +16,7 @@ export class AuthController {
   }
 
   @Post('register')
+  @ApiBody({ type: CreateAuthDto, required: true })
   async register(@Body() createAuthDto: CreateAuthDto) {
     return await this.authService.register(createAuthDto)
   }

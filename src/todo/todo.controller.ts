@@ -3,6 +3,7 @@ import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiParam, ApiQuery } from '@nestjs/swagger';
 
 @Controller('todo')
 export class TodoController {
@@ -15,6 +16,9 @@ export class TodoController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiQuery({ name: 'userId', required: false })
+  @ApiQuery({ name: 'todoTitle', required: false })
+  @ApiQuery({ name: 'status', required: false })
   find(
     @Query('userId') userId: string,
     @Query('todoTitle') todoTitle: string,
@@ -27,21 +31,29 @@ export class TodoController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiParam({ name: 'id', required: false })
   findOne(@Param('id') id: string) {
     return this.todoService.findOne(+id);
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiParam({ name: 'id', required: false })
   update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
     return this.todoService.update(+id, updateTodoDto);
   }
 
   @Patch()
+  @UseGuards(JwtAuthGuard)
+  @ApiQuery({ name: 'todoId', required: false })
   toggle(@Query('todoId') todoId: string) {
     return this.todoService.toggleStatus(+todoId)
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiParam({ name: 'id', required: false })
   remove(@Param('id') id: string) {
     return this.todoService.remove(+id);
   }

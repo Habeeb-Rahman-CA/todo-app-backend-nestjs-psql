@@ -8,8 +8,7 @@ async function bootstrap() {
     .setTitle('Todo Api')
     .setDescription('Sample todo api created for test swagger')
     .setVersion('1.0')
-    .addTag('todo')
-    .build();
+    .build()
   const documentFactory = () => SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, documentFactory)
   await app.listen(process.env.PORT ?? 3000);
