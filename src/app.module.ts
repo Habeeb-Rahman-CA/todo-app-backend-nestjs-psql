@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { FileUpload } from './file-upload/entities/file-upload.entity';
+import { AuthModule } from './auth/auth.module';
+import { AuthUser } from './auth/entities/auth.entity';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { FileUpload } from './file-upload/entities/file-upload.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [Todo, User, FileUpload],
+        entities: [Todo, User, FileUpload, AuthUser],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -28,6 +30,7 @@ import { FileUpload } from './file-upload/entities/file-upload.entity';
     TodoModule,
     UserModule,
     FileUploadModule,
+    AuthModule,
   ],
 })
 export class AppModule { }

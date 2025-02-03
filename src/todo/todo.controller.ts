@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @Controller('todo')
 export class TodoController {
@@ -13,6 +14,7 @@ export class TodoController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   find(
     @Query('userId') userId: string,
     @Query('todoTitle') todoTitle: string,

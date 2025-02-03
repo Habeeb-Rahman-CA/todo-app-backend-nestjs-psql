@@ -79,7 +79,7 @@ export class UserService {
   async findByGender(gender: string) {
     try {
       return await this.userRepository.find({
-        where: { gender: gender }   
+        where: { gender: gender }
       })
     } catch (error) {
       throw new NotFoundException(error.message)
