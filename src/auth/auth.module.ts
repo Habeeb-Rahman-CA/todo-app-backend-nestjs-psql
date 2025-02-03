@@ -8,18 +8,19 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, RefreshJwtStrategy],
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forFeature([AuthUser]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' }
+      signOptions: { expiresIn: '60s' }
     }),
-    PassportModule.register({defaultStrategy: 'local'})
+    PassportModule.register({ defaultStrategy: 'local' })
   ],
 })
 export class AuthModule { }

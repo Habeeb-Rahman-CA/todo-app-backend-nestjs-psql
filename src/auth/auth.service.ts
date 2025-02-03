@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthUser } from './entities/auth.entity';
 import { Repository } from 'typeorm';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { log } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +31,8 @@ export class AuthService {
     };
     return {
       ...user,
-      accessToken: this.jwtService.sign(payload)
+      accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, {expiresIn: '7d'})
     };
   }
 
@@ -56,6 +56,19 @@ export class AuthService {
     } catch (error) {
       throw new NotFoundException()
     }
+  }
+
+  async refreshToken(user: CreateAuthDto) {
+    const payload = {
+      username: user.email,
+      sub: {
+        name: user.name
+      },
+    };
+    return {
+      ...user,
+      accessToken: this.jwtService.sign(payload),
+    };
   }
 
 }
